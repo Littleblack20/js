@@ -45,12 +45,12 @@
         }
     </script>
     <script>
-    window.onload=function(){//这里我增加的
+    window.onload=function(){
          var inputs =document.getElementsByTagName('input');//获取所有input元素
         var reg_msg;
         for (var i=0; i<inputs.length-1;++i){//为每个input元素添加失去焦点事件
             inputs[i].onblur=inputBlur;
-            inputs[i].onfocus=inputFocus;//我给增加的
+            inputs[i].onfocus=inputFocus;
         }
     function inputBlur(){
         var name=this.name;  //获取输入框的name值
