@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <style>
+        .error{ color:crimson;font-size:10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; line-height: 20px;height:20px}
+        .success{ color:rgb(0, 255, 149);font-size:10px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; line-height: 20px;height:20px}
+        body{
+            background-color:skyblue;
+        }
+        table{
+            margin: 0 auto;
+        }
+        #box1{
+            margin-top: 100px;
+            margin-bottom: 50px;
+        }
+        #bcg{
+        background-color: #fff;
+        width: 700px;
+        margin: 0 auto;
+        }
+    </style>
+    <script>
+        function disable()
+        {
+         document.getElementById("name").disabled=true
+         document.getElementById("pwd").disabled=true
+         document.getElementById("repwd").disabled=true
+         document.getElementById("email").disabled=true
+         document.getElementById("selYear").disabled=true
+         document.getElementById("jg").disabled=true
+        }
+        function enable()
+        {
+         document.getElementById("name").disabled=false
+         document.getElementById("pwd").disabled=false
+         document.getElementById("repwd").disabled=false
+         document.getElementById("email").disabled=false
+         document.getElementById("selYear").disabled=false
+         document.getElementById("jg").disabled=false
+        }
+    </script>
+    <script>
+    window.onload=function(){//这里我增加的
+         var inputs =document.getElementsByTagName('input');//获取所有input元素
+        var reg_msg;
+        for (var i=0; i<inputs.length-1;++i){//为每个input元素添加失去焦点事件
+            inputs[i].onblur=inputBlur;
+            inputs[i].onfocus=inputFocus;//我给增加的
+        }
+    function inputBlur(){
+        var name=this.name;  //获取输入框的name值
+        var val=this.value;  //获取输入框的value值  
+        var tips=this.placeholder; //获取输入框中的提示信息
+        var tips_obj=this.parentNode.nextSibling.firstChild; //获取输入框中的提示信息
+        val=val.trim();//去掉两端的空白字符
+        if(!val){//文本框为空给出提示信息
+            error(tips_obj,'输入框不能为空');
+            return false;
+        }
+       reg_msg=getRegMsg(name,tips);//获取正则匹配规则和提示信息
+      if(reg_msg['reg'].test(val)){
+            success(tips_obj,reg_msg['msg']['success']);//匹配成功，显示成功的信息
+        }else{
+            error(tips_obj, reg_msg['msg'] ['error']);//匹配失败，显示失败的信息
+        }
+       
+    }
+    function inputFocus(){
+        var tips_obj=this.parentNode.nextSibling.firstChild;
+            tips_obj.innerHTML=""
+
+    }
+    function error(obj,msg){//显示验证失败提示信息
+        obj.className='error';
+        obj.innerHTML=msg+',请重新输入';
+    }
+    function getRegMsg(name,tips){
+        var reg =msg ='';
+        switch (name){
+            case 'username':
+            reg =/^[\u4e00-\u9fa5]{2,16}$/;
+            msg ={'success':'昵称输入正确','error':tips};
+            break;
+            case 'pwd':
+            reg=/^\w*(?=.{8,12})(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\w*$/;
+            msg ={'success':'密码输入正确','error':tips};
+            break;
+            case 'repwd':
+            var  con =document.getElementsByTagName('input')[1].value;
+            reg =RegExp('^' +con+'$');
+            msg ={'success':'两次密码输入正确','error':'两次输入的密码不一致'};
+            break;
+            case 'email':
+            reg =/^[a-zA-Z]+(\w+(\_|\-|\.)*)+@(\w+(\-)?)+(\.\w{2,})+$/;
+            msg ={'success':'邮箱地址输入正确','error':'邮箱地址输入不正确'};
+            break;
+        }
+        return {'reg':reg,'msg':msg};  
+    }
+     function success(obj,msg){//显示验证通过提示信息
+            obj.className ='success';
+            obj.innerHTML =msg;
+        }
+    }
+    </script>
+
+    </head>
+    <body>
+        <div id="bcg">
+
+        <table id="box1">
+            <tr>
+                <th>昵 称:</th>
+                <td>
+                    <input type="text" name="username" size="40px" id="name"  disabled="true"
+                        placeholder="长度2-16位，汉字不允许出现其他字符">
+                </td><td><div></div></td>
+            </tr>
+            <tr>
+                <th>密 码:</th>
+                <td>
+                    <input type="password" name="pwd" maxlength="12"  size="30" id="pwd"  disabled="true"
+                        placeholder="长度8-12位，大小写字母、数字和下划线组成">
+                </td><td><div></div></td>
+            </tr>
+            <tr>
+                <th>确认密码:</th>
+                <td>
+                    <input type="password" name="repwd" maxlength="12"  size="30" id="repwd"  disabled="true"
+                        placeholder="请在此输入密码进行确认">
+                </td><td><div></div></td>
+            </tr>
+            <tr>
+                <th>出生日期:</th>
+                <td>
+                    <script>
+                        document.writeln("<select id='selYear' name='year'  disabled='true'>");
+                        document.writeln("<option selected='selected' value=''>选择年份<\/option>");
+                        for(var i=1980;i<2028;i++){
+                        document.writeln("<option value='"+i+"'>"+i+"年<\/option>")   
+                         }
+                        document.writeln("<\/select>");
+                        var selYear=document.getElementById("selYear");
+                        selYear.selectedIndex=0;
+                        selYear.onchange=function(){
+                            document.getElementById("selMonth").style.display="";
+                            document.getElementById("selMonth").options[0].selected="true";
+                        }
+                        document.writeln("<select id='selMonth' style='display:none' name='month'>");
+                        document.writeln("<option selected-'selected' value=''>选择月份<\/option>");
+                        var months=["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+                        for(var i=0;i<months.length;i++){
+                            document.writeln("<option value='"+i+"'>"+months[i]+"<\/option>");}
+                            document.writeln("<\/select>");
+                            var selMonth=document.getElementById("selMonth");
+                            selMonth.selectedIndex=0
+                            selMonth.onchange=function(){
+                                var days=[31,28,31,30,31,30,31,31,30,31,30,31];
+                                var leapDays=[31,29,31,30,31,30,31,31,30,31,30,31];
+                                var currentYear=parseInt(selYear.options[selYear.selectedIndex].value);
+                                var currentMonth=parseInt(selMonth.options[selMonth.selectedIndex].value);
+                                var selDate=document.getElementById("selDate");
+                                selDate.options.length=0;
+                                if(currentMonth==1){
+                                    if(isLeapYear(currentYear)){
+                                        selDate.options[0]=new Option("选择日期");
+                                        selDate.options[0].value="";
+                                        for(var i=1;i<=leapDays[currentMonth];i++){
+                                            selDate.options[i]=new Option(i+"日");
+                                            selDate.options[i].value=i;
+                                        }
+                                    }else{
+                                    selDate.options[0]=new Option("选择日期");
+                                    selDate.options[0].value="";
+                                    for(var i=1;i<=days[currentMonth];i++){
+                                        selDate.options[i]=new Option(i+"日");
+                                        selDate.options[i].value=i;
+                                    }
+                                }
+                            }else{
+                                selDate.options[0]=new Option("选择日期");
+                                selDate.options[0].value="";
+                                    for(var i=1;i<=days[currentMonth];i++){
+                                        selDate.options[i]=new Option(i+"日");
+                                        selDate.options[i].value=i;
+                            }
+                        }
+                                selDate.style.display="";
+                            }
+                            document.writeln("<select id='selDate' style='display:none' name='day'>");
+                                document.writeln("<\/select>");
+                                function isLeapYear(year){
+                                    var result=false;
+                                    if((year%4==0&&year&100!=0)||year%400==0){
+                                        result=true;
+                                    }
+                                    return result;
+                            }
+                    </script>
+                </td> 
+            </tr>
+            <tr>
+                <th>电子邮箱:</th>
+                <td>
+                    <input type="text" name="email"  size="30" id="email"  disabled="true" 
+                        placeholder="用户名@域名(域名后缀至少两个字符)">
+                </td><td><div></div></td>
+            </tr>
+            <tr>
+                <th>验证码:</th>
+                <td>
+                    <input type="text" size="10" name="jg" id="jg"  disabled="true" > 
+                </td>
+            </tr><td><div></div></td>
+        </table>
+        <table >
+            <tr>
+                 <td>
+                     <textarea readonly cols="50" rows="5">用户协议内容：                    
+                         我们提供服务时，可能会收集、储存和使用下列与你有关的信息。如果您不提供相关信息，可能无法注册成为我们的用户或无法享受我们提供的某些服务，或者无法达到相关服务拟达到的效果。</textarea>
+                 </td>
+             </tr>
+             <tr>
+                 <td>
+                    <input type="checkBox" onclick="if (this.checked) {enable()} else {disable()}">我同意此协议内容
+                 </td>
+             </tr>
+         </table>
+    </div>
+    </body>
+</html>
